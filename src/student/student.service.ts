@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Student } from './student.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateStudentInput } from './create-student.input';
+import { CreateStudentInput } from './input/create-student.input';
 import { v4 as uuid } from 'uuid';
+import { EditStudentInput } from './input/edit-student.input';
 
 @Injectable()
 export class StudentService {
@@ -32,11 +33,35 @@ export class StudentService {
     return this.studentRepository.save(student);
   }
 
-  async getManyStudents(studentsIds: string[]): Promise<Student[]> {
+  async editStudent(
+    id: string,
+    editStudentInput: EditStudentInput,
+  ): Promise<Student> {
+    const { firstName, lastName } = editStudentInput;
+    const student = await this.getStudent(id);
+
+    student.firstName = firstName;
+    student.lastName = lastName;
+
+    return this.studentRepository.save(student);
+  }
+
+  async deleteStudent(id: string): Promise<Student> {
+    const student = await this.getStudent(id);
+    const result = await this.studentRepository.delete({ id });
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
+
+    return student;
+  }
+
+  async getManyStudents(studentIds: string[]): Promise<Student[]> {
     return this.studentRepository.find({
       where: {
         id: {
-          $in: studentsIds,
+          $in: studentIds,
         },
       },
     });

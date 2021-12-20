@@ -8,10 +8,11 @@ import {
 } from '@nestjs/graphql';
 import { LessonType } from './lesson.type';
 import { LessonService } from './lesson.service';
-import { CreateLessonInput } from './lesson.input';
-import { AssignStudentsToLessonInput } from './assign-students-to-lesson.input';
+import { CreateLessonInput } from './input/create-lesson.input';
+import { AssignStudentsToLessonInput } from './input/assign-students-to-lesson.input';
 import { Lesson } from './lesson.entity';
 import { StudentService } from '../student/student.service';
+import { EditLessonInput } from './input/edit-lesson.input';
 
 @Resolver((of) => LessonType)
 export class LessonResolver {
@@ -35,6 +36,20 @@ export class LessonResolver {
     @Args('createLessonInput') createLessonInput: CreateLessonInput,
   ) {
     return this.lessonService.createLesson(createLessonInput);
+  }
+
+  @Mutation((returns) => LessonType)
+  async editLesson(
+    @Args('id') id: string,
+    @Args('editLessonInput', { nullable: true })
+    editLessonInput: EditLessonInput,
+  ) {
+    return this.lessonService.editLesson(id, editLessonInput);
+  }
+
+  @Mutation((returns) => LessonType)
+  async deleteLesson(@Args('id') id: string) {
+    return this.lessonService.deleteLesson(id);
   }
 
   @Mutation((returns) => LessonType)

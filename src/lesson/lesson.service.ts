@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Lesson } from './lesson.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { CreateLessonInput } from './lesson.input';
+import { CreateLessonInput } from './input/create-lesson.input';
+import { EditLessonInput } from './input/edit-lesson.input';
 
 @Injectable()
 export class LessonService {
@@ -30,6 +31,31 @@ export class LessonService {
     });
 
     return this.lessonRepository.save(lesson);
+  }
+
+  async editLesson(
+    id: string,
+    editLessonInput: EditLessonInput,
+  ): Promise<Lesson> {
+    const { name, startDate, endDate } = editLessonInput;
+    const lesson = await this.getLesson(id);
+
+    lesson.name = name;
+    lesson.startDate = startDate;
+    lesson.endDate = endDate;
+
+    return this.lessonRepository.save(lesson);
+  }
+
+  async deleteLesson(id: string): Promise<Lesson> {
+    const lesson = await this.getLesson(id);
+    const result = await this.lessonRepository.delete({ id });
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
+
+    return lesson;
   }
 
   async assignStudentsToLesson(
