@@ -48,6 +48,11 @@ export class LessonResolver {
   }
 
   @Mutation((returns) => LessonType)
+  async deleteLesson(@Args('id') id: string) {
+    return this.lessonService.deleteLesson(id);
+  }
+
+  @Mutation((returns) => LessonType)
   async assignStudentsToLesson(
     @Args('assignStudentsToLessonInput')
     assignStudentsToLessonInput: AssignStudentsToLessonInput,

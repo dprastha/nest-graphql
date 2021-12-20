@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Lesson } from './lesson.entity';
 import { Repository } from 'typeorm';
@@ -45,6 +45,17 @@ export class LessonService {
     lesson.endDate = endDate;
 
     return this.lessonRepository.save(lesson);
+  }
+
+  async deleteLesson(id: string): Promise<Lesson> {
+    const lesson = await this.getLesson(id);
+    const result = await this.lessonRepository.delete({ id });
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
+
+    return lesson;
   }
 
   async assignStudentsToLesson(
