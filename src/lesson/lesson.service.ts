@@ -18,7 +18,11 @@ export class LessonService {
       const { search } = filterLessons;
 
       if (search) {
-        return this.lessonRepository.find({ name: search });
+        return this.lessonRepository.find({
+          where: {
+            name: new RegExp(`^${search}`),
+          },
+        });
       }
     }
 
