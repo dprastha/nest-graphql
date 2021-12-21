@@ -20,7 +20,7 @@ export class LessonService {
       if (search) {
         return this.lessonRepository.find({
           where: {
-            name: new RegExp(`^${search}`),
+            name: new RegExp(`${search}`),
           },
         });
       }
