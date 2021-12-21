@@ -1,8 +1,8 @@
 {
   "name": "nest-graphql",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.1.0",
+  "description": "NestJS with GraphQL",
+  "author": "Daniel Prastha",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
