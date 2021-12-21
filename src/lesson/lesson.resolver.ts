@@ -13,6 +13,7 @@ import { AssignStudentsToLessonInput } from './input/assign-students-to-lesson.i
 import { Lesson } from './lesson.entity';
 import { StudentService } from '../student/student.service';
 import { EditLessonInput } from './input/edit-lesson.input';
+import { GetLessonsFilterInput } from './input/get-lessons-input';
 
 @Resolver((of) => LessonType)
 export class LessonResolver {
@@ -22,8 +23,11 @@ export class LessonResolver {
   ) {}
 
   @Query((returns) => [LessonType])
-  async lessons() {
-    return this.lessonService.getLessons();
+  async lessons(
+    @Args('getLessonsFilterInput', { nullable: true })
+    filterLessons: GetLessonsFilterInput,
+  ) {
+    return this.lessonService.getLessons(filterLessons);
   }
 
   @Query((returns) => LessonType)
