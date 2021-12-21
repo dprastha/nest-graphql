@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { CreateLessonInput } from './input/create-lesson.input';
 import { EditLessonInput } from './input/edit-lesson.input';
+import { GetLessonsFilterInput } from './input/get-lessons-input';
 
 @Injectable()
 export class LessonService {
@@ -12,7 +13,15 @@ export class LessonService {
     @InjectRepository(Lesson) private lessonRepository: Repository<Lesson>,
   ) {}
 
-  async getLessons(): Promise<Lesson[]> {
+  async getLessons(filterLessons: GetLessonsFilterInput): Promise<Lesson[]> {
+    if (filterLessons) {
+      const { search } = filterLessons;
+
+      if (search) {
+        return this.lessonRepository.find({ name: search });
+      }
+    }
+
     return this.lessonRepository.find();
   }
 
